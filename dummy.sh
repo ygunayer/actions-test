@@ -2,4 +2,4 @@
 
 FOO="${FOO:-$BAR}"
 
-echo "FOO: $FOO"
+echo "FOO is: $FOO"
