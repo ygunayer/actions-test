@@ -12,6 +12,7 @@ on:
 
 jobs:
   deploy-to-prod:
+    if: ${{ github.event.client_payload != null || github.event.workflow_run.conclusion == 'success' }}
     name: Deploy to Prod
     needs: build
     runs-on: ubuntu-latest
