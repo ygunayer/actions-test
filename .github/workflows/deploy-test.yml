@@ -1,0 +1,34 @@
+name: Deploy to Test
+
+on:
+  push:
+    branches: master
+
+  repository_dispatch:
+    types: deploy-test
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: ./build.sh
+
+  deploy-to-test:
+    name: Deploy to Test
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Deploy
+        run: |
+          echo "Deploying commit $GITHUB_SHA to test environment"
+          ./deploy.sh $GITHUB_SHA test.foo.bar
