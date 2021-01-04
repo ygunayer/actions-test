@@ -11,3 +11,4 @@ fi
 
 echo "pew pew"
 echo "deployed commit $COMMIT_ID to $DEPLOY_TARGET"
+echo "foo bar baz"
