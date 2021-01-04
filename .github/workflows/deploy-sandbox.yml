@@ -1,0 +1,31 @@
+name: Deploy to Sandbox
+
+on:
+  repository_dispatch:
+    types: deploy-sandbox
+
+  workflow_run:
+    workflows: ["Deploy to Prod"]
+    branches: [master]
+    types:
+      - completed
+
+jobs:
+  deploy-to-sandbox:
+    if: ${{ github.event.client_payload != null || github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy to Sandbox
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.client_payload.sha }}
+
+      - name: Deploy
+        env:
+          COMMIT_SHA: ${{ github.event.client_payload.sha }}
+        run: |
+          COMMIT_SHA="${COMMIT_SHA:-$GITHUB_SHA}"
+          echo "Deploying commit $COMMIT_SHA to sandbox environment"
+          ./deploy.sh $COMMIT_SHA sandbox.foo.bar

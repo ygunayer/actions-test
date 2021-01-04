@@ -4,15 +4,8 @@ on:
   repository_dispatch:
     types: deploy-prod
 
-  workflow_run:
-    workflows: ["Deploy to Test"]
-    branches: [master]
-    types:
-      - completed
-
 jobs:
   deploy-to-prod:
-    if: ${{ github.event.client_payload != null || github.event.workflow_run.conclusion == 'success' }}
     name: Deploy to Prod
     runs-on: ubuntu-latest
 
@@ -26,6 +19,5 @@ jobs:
         env:
           COMMIT_SHA: ${{ github.event.client_payload.sha }}
         run: |
-          COMMIT_SHA="${COMMIT_SHA:-$GITHUB_SHA}"
           echo "Deploying commit $COMMIT_SHA to prod environment"
           ./deploy.sh $COMMIT_SHA prod.foo.bar
