@@ -25,6 +25,7 @@ jobs:
       - name: Deploy
         env:
           COMMIT_SHA: ${{ github.event.client_payload.sha }}
+          REFS_URL: ${{ github.event.workflow_run.repository.git_refs_url }}
         run: |
-          echo "Deploying commit $COMMIT_SHA to sandbox environment"
+          echo "Deploying commit $COMMIT_SHA to sandbox environment (REFS URL: $REFS_URL)"
           ./deploy.sh $COMMIT_SHA sandbox.foo.bar
