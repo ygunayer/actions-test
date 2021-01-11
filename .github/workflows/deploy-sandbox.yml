@@ -4,11 +4,11 @@ on:
   repository_dispatch:
     types: deploy-sandbox
 
-  workflow_run:
-    workflows: ["Deploy to Prod"]
-    branches: [master]
-    types:
-      - completed
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA'
+        required: true
 
 jobs:
   deploy-to-sandbox:
@@ -25,9 +25,8 @@ jobs:
       - name: Deploy
         env:
           COMMIT_SHA: ${{ github.event.client_payload.sha }}
-          EVENT_DATA: ${{ github.event.workflow_run }}
+          EVENT_DATA: ${{ github.event.inputs.commit_sha }}
         run: |
           echo "Deploying commit $COMMIT_SHA to sandbox environment"
-          echo "EVENT DATA"
-          echo $EVENT_DATA
+          echo "Commit SHA from event: $EVENT_DATA"
           ./deploy.sh $COMMIT_SHA sandbox.foo.bar

@@ -21,3 +21,15 @@ jobs:
         run: |
           echo "Deploying commit $COMMIT_SHA to prod environment"
           ./deploy.sh $COMMIT_SHA prod.foo.bar
+
+      - name: Workflow Dispatch
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          INPUT_DATA='{"ref": "master", "inputs": {"commit_sha": "$COMMIT_SHA"}}'
+          echo "Invoking workflow dispatch"
+          curl -XPOST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H 'Authorization: Bearer $DEPLOY_TOKEN'
+            https://api.github.com/repos/ygunayer/actions-test/workflows/deploy-sandbox/dispatches \
+            -d $INPUT_DATA
